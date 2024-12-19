@@ -147,3 +147,13 @@ providers:
             model: uukuguy/speechless-llama2-hermes-orca-platypus-13b
             device_map: auto
             trust_remote_code: true
+  customserved:
+    name: CustomServed
+    description: Custom Served LLM Models
+    models:
+      - name: Qwen32BAWQ
+        num_tokens: 4096
+        model:
+          provider: customserved
+          parameters:
+            model: model/QwenCode32BInt4AWQ
