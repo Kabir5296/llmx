@@ -34,6 +34,8 @@ class CustomServedTextGen(TextGenerator):
     
     def generate(self,
                  messages: Union[list[dict], str],
+                 config: TextGenerationConfig = TextGenerationConfig(),
+                 **kwargs,
                  ) -> TextGenerationResponse:
         
         messages = self.format_messages(messages)
@@ -45,13 +47,17 @@ class CustomServedTextGen(TextGenerator):
             "Content-Type": "application/json"      # Specify the content type
         }
         
+        config = {
+            "model": config.model,
+            "messages": messages,
+        }
+        
         response = requests.post(self.generation_api, params = payload, headers=headers)
         response_text = [Message(role="system", content=response.json()['generated_text'])]
-        coder_bhai_config = requests.get(self.config_api)
         
         gen_response = TextGenerationResponse(
             text = response_text,
-            config = coder_bhai_config,
+            config = config,
         )
         
         return gen_response
