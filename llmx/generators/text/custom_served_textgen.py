@@ -10,7 +10,7 @@ class CustomServedTextGen(TextGenerator):
                  api_endpoint : str = "http://192.168.101.231:6969",
                  gen_endpoint : str = "get_response",
                  config_endpoint : str = "get_model_config",
-                 model : str = "Qwen32BAWQ",
+                 model : str = "phi-4",
                  models : dict = None):
         
         super().__init__(provider=provider)
@@ -39,9 +39,10 @@ class CustomServedTextGen(TextGenerator):
                  ) -> TextGenerationResponse:
         
         messages = self.format_messages(messages)
+        print(messages)
         payload = {
             "prompt" : messages,
-            "bypass_cache" : "false",
+            "bypass_cache" : "True",
         }
         headers = {
             "Content-Type": "application/json"      # Specify the content type
@@ -51,8 +52,7 @@ class CustomServedTextGen(TextGenerator):
             "model": config.model,
             "messages": messages,
         }
-        
-        response = requests.post(self.generation_api, params = payload, headers=headers)
+        response = requests.post(self.generation_api, json = payload, headers=headers)
         response_text = [Message(role="system", content=response.json()['generated_text'])]
         
         gen_response = TextGenerationResponse(
